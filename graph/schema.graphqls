@@ -1,28 +1,45 @@
-# GraphQL schema example
-#
-# https://gqlgen.com/getting-started/
+# The schema.graphqls file is used to define the structure of the data that can be queried.
+# It includes definitions for types, inputs, queries, and mutations.
 
-type Todo {
-  id: ID!
-  text: String!
-  done: Boolean!
-  user: User!
+# Types: Types in GraphQL are the kinds of objects you can fetch from your service and what fields they have.
+# They can be object types, scalar types, enumeration types, union types, and interface types.
+type Category {
+  id: ID! # ! indicates that is required
+  name: String!
+  description: String # not required
+  courses: [Course!]!
 }
 
-type User {
+type Course {
   id: ID!
   name: String!
+  description: String
+  category: Category!
 }
 
+# Queries are used to fetch data.
+# Every GraphQL service has a query type and may or may not have a mutation type.
+# These types are the same as a regular object type, but they are special because they define the entry point of every GraphQL query.
 type Query {
-  todos: [Todo!]!
+  categories: [Category!]!
+  courses: [Course!]!
 }
 
-input NewTodo {
-  text: String!
-  userId: String!
+# Input types are used to pass complex objects, particularly valuable in the case of mutations, where you might want to pass in a whole object to be created.
+input NewCategory {
+  name: String!
+  description: String
 }
 
+input newCourse {
+  name: String!
+  description: String
+  categoryId: ID!
+}
+
+# Mutations are used to modify data.
+# They work in a similar way to queries - you define fields on the Mutation type, and those are available as the root mutation fields you can call in your query.
 type Mutation {
-  createTodo(input: NewTodo!): Todo!
+  createCategory(input: NewCategory!): Category!
+  createCourse(input: newCourse!): Course!
 }

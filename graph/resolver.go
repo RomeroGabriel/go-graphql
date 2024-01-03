@@ -4,4 +4,8 @@ package graph
 //
 // It serves as dependency injection for your app, add any dependencies you require here.
 
-type Resolver struct{}
+import "github.com/RomeroGabriel/go-graphQL/internal/db"
+
+type Resolver struct {
+	CategoryDB *db.CategoryDB
+}
