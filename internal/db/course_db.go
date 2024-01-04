@@ -60,3 +60,20 @@ func (c *CourseDB) FindAll() ([]entity.Course, error) {
 	}
 	return courses, nil
 }
+
+func (c *CourseDB) FindByCategoryId(categoryId string) ([]entity.Course, error) {
+	rows, err := c.db.Query("SELECT id, name, description, categoryID FROM Courses WHERE categoryId = $1", categoryId)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	courses := []entity.Course{}
+	for rows.Next() {
+		var id, name, description, categoryId string
+		if err := rows.Scan(&id, &name, &description, &categoryId); err != nil {
+			return nil, err
+		}
+		courses = append(courses, entity.Course{Id: id, Name: name, Description: description, CategoryId: categoryId})
+	}
+	return courses, nil
+}
