@@ -1,7 +1,9 @@
 package db
 
 import (
+	"context"
 	"database/sql"
+	"log"
 
 	entity "github.com/RomeroGabriel/go-graphQL/internal/entity"
 	"github.com/google/uuid"
@@ -12,6 +14,22 @@ type CategoryDB struct {
 }
 
 func NewCategory(db *sql.DB) *CategoryDB {
+	sqlStmt := `
+	CREATE TABLE IF NOT EXISTS Categories 
+		(id TEXT NOT NULL, name TEXT NOT NULL, description TEXT NOT NULL);
+	`
+	ctx := context.Background()
+	conn, err := db.Conn(ctx)
+	if err != nil {
+		log.Printf("%q: %s\n", err, sqlStmt)
+		return nil
+	}
+	defer conn.Close()
+	_, err = conn.ExecContext(ctx, sqlStmt)
+	if err != nil {
+		log.Printf("%q: %s\n", err, sqlStmt)
+		return nil
+	}
 	return &CategoryDB{db: db}
 }
 
