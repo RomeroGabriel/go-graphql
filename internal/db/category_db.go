@@ -43,3 +43,20 @@ func (c *CategoryDB) Create(name string, description string) (entity.Category, e
 	}
 	return entity.Category{Id: id, Name: name, Description: description}, nil
 }
+
+func (c *CategoryDB) FindAll() ([]entity.Category, error) {
+	rows, err := c.db.Query("SELECT id, name, description FROM Categories")
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	categories := []entity.Category{}
+	for rows.Next() {
+		var id, name, description string
+		if err := rows.Scan(&id, &name, &description); err != nil {
+			return nil, err
+		}
+		categories = append(categories, entity.Category{Id: id, Name: name, Description: description})
+	}
+	return categories, nil
+}
